@@ -1,9 +1,5 @@
 #include <MIDI.h>
 #include <Mode.h>
-#include <midi_Defs.h>
-#include <midi_Message.h>
-#include <midi_Namespace.h>
-#include <midi_Settings.h>
 
 MIDI_CREATE_DEFAULT_INSTANCE();
 
@@ -17,18 +13,14 @@ void setup() {
   Wire red = *new Wire(8, blueNotes, LOW);
   Wire ora2 = *new Wire(9, blueNotes, LOW);
   Wire wires[4] = {blue, ora, red, ora2};
+  Wire *wireRef;
+  wireRef = wires;
+  Mode noteMatcherMode = *new NoteMatch(&MIDI, wireRef, sizeof(wires));
+  manager = new WireManager(&noteMatcherMode);
   Serial.begin(9600);
-  Serial.println(sizeof(wires));
-  Serial.println("WTF");
-  manager = new WireManager(new NoteMatch(MIDI, wires, sizeof(wires)));
-  // Escudo status LED
-  pinMode(10, OUTPUT);
 }
 
 
 void loop() {
-//Serial.println(manager->mode->getPins());
-//  if(MIDI.read()) {
-//    manager->processMidi();
-//  }
+  manager->processMidi();
 }

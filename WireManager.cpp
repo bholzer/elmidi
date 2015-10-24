@@ -1,30 +1,29 @@
 #include "Arduino.h"
 
-#include <MIDI.h>
-#include <midi_Defs.h>
-#include <midi_Message.h>
-#include <midi_Namespace.h>
-#include <midi_Settings.h>
-#include <Mode.h>
+#include <WireManager.h>
 
 
-WireManager::WireManager(Wire *wires, midi::MidiInterface<HardwareSerial>& interface)
-: wires(wires), interface(interface)
+WireManager::WireManager()
 {
+	// memcpy(this->wires, newWires, wireArrLen);
+}
 
+WireManager::WireManager(Mode *currentMode)
+{
+	memcpy(&this->mode, &currentMode, sizeof(currentMode));
 }
 
 void WireManager::allWiresOff()
 {
 	for(int i = 0; i < 4; i++) {
-		wires[i].deactivate();
+		mode.wires[i].deactivate();
 	}
 }
 
 void WireManager::allWiresOn()
 {
 	for(int i = 0; i < 4; i++) {
-		wires[i].activate();
+		mode.wires[i].activate();
 	}
 }
 
@@ -38,7 +37,14 @@ void WireManager::wireOn(Wire otherWire)
 	otherWire.activate();
 }
 
+void WireManager::setMode(Mode otherMode)
+{
+	// *mode = otherMode;
+	// mode->wires = wires;
+}
+
 void WireManager::processMidi()
 {
-		
+	Serial.println("DO THING Parent");
+	mode.processMidiMessage();
 }
